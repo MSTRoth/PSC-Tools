@@ -44,7 +44,7 @@ process.data.get.sum <- function(data.frame, funding_agency_name, funding_agency
 #'
 #'@return ggplot
 #'
-#'@example
+#'@example plot.one(data, facet_var = "funding_agency", 3, scale_text = "Millions", "Leidos", "FY14-FY17")
 #'
 #'
 #'
