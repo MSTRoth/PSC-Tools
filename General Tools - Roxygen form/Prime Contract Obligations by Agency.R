@@ -383,6 +383,8 @@ bar_primeob_by_agency_choosing <- function(company_name,
           plot.all<-grid.arrange(plot1, plot2, plot3, plot4, nrow = 1, widths = grid_division, 
                                top = textGrob(paste(company_name, "Contract Obligations by Agency ", FY_range, sep = ""),
                                               gp = gpar(fontsize = 24)), bottom = "Fiscal Year")
+        
+        } 
         else{
           data.agency.year1 <- process.data.get.sum(data, funding_agency_name1, funding_agency_type1, FY, scale)
           data.agency.year2 <- process.data.get.sum(data, funding_agency_name2, funding_agency_type2, FY, scale)
@@ -402,7 +404,6 @@ bar_primeob_by_agency_choosing <- function(company_name,
                                                 gp = gpar(fontsize = 24)), bottom = "Fiscal Year")
           
           
-        }
       }
         
       }
