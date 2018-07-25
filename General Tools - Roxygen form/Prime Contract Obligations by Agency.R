@@ -72,10 +72,11 @@ bar_primeob_by_agency <- function(company_name,
   ###Create Barplot and Save as JPG
   plot <- plot.one(data.agency.year, "funding_agency", num_size, scale_text, company_name, FY_range)
   
+  plot
+  data.agency.year
+  
   ggsave(paste(company_name, " Contract Obligations by Agency.jpg", sep = ""), plot, 
          width = w, height = h, units = "in")
-  plot
-  
 }
 
 
@@ -191,6 +192,8 @@ plot.all<-grid.arrange(plot1, plot2, nrow = 1, widths = grid_division,
 
 ggsave(paste(company_name, " Contract Obligations by Agency.jpg", sep = ""), plot.all, 
        width = w, height = h, units = "in")
+data.agency.year.all <- rbind(data.agency.year.top, data.agency.year.bottom)
+
   }
 else{
   ##Seperate Out different scales
@@ -256,14 +259,16 @@ else{
   
   
   plot.all<-grid.arrange(plot1, plot2, plot3, nrow = 1, widths = grid_division, 
-                         top = textGrob(paste(company_name, "Contract Obligations by Agency ", FY_range, sep = ""), gp = gpar(fontsize = 24)), bottom = "Fiscal Year") 
+                         top = textGrob(paste(company_name, " Contract Obligations by Agency ", FY_range, sep = ""), gp = gpar(fontsize = 24)), bottom = "Fiscal Year") 
   
   
   
   ggsave(paste(company_name, " Contract Obligations by Agency.jpg", sep = ""), plot.all, 
          width = w, height = h, units = "in")
+  data.agency.year.all <- rbind(data.agency.year.top, data.agency.year.middle, data.agency.year.bottom)
 }
 plot.all
+data.agency.year.all
 
 }
 
@@ -337,7 +342,7 @@ bar_primeob_by_agency_choosing <- function(company_name,
     ###Create Barplot and Save as JPG
     plot.all <- plot.one(data.agency.year1, "funding_agency", num_size, scale_text, funding_agency_name1, FY_range)
     
-    plot.all
+    data.agency.year.all <- data.agency.year1
     
   }  
   else{
@@ -351,7 +356,9 @@ bar_primeob_by_agency_choosing <- function(company_name,
       
       plot.all<-grid.arrange(plot1, plot2, nrow = 1, widths = grid_division, 
                              top = textGrob(paste(company_name, "Contract Obligations by Agency ", FY_range, sep = ""), gp = gpar(fontsize = 24)), bottom = "Fiscal Year") 
-    }
+      data.agency.year.all <- rbind(data.agency.year1, data.agency.year2)
+      
+      }
     else{
       if(is.null(funding_agency_name4)){
         data.agency.year1 <- process.data.get.sum(data, funding_agency_name1, funding_agency_type1, FY, scale)
@@ -366,6 +373,8 @@ bar_primeob_by_agency_choosing <- function(company_name,
         plot.all<-grid.arrange(plot1, plot2, plot3, nrow = 1, widths = grid_division, 
                              top = textGrob(paste(company_name, "Contract Obligations by Agency ", FY_range, sep = ""),
                              gp = gpar(fontsize = 24)), bottom = "Fiscal Year")
+        data.agency.year.all <- rbind(data.agency.year1, data.agency.year2, data.agency.year3)
+        
       }
       else{
         if(is.null(funding_agency_name5)){
@@ -383,6 +392,7 @@ bar_primeob_by_agency_choosing <- function(company_name,
           plot.all<-grid.arrange(plot1, plot2, plot3, plot4, nrow = 1, widths = grid_division, 
                                top = textGrob(paste(company_name, "Contract Obligations by Agency ", FY_range, sep = ""),
                                               gp = gpar(fontsize = 24)), bottom = "Fiscal Year")
+          data.agency.year.all <- rbind(data.agency.year1, data.agency.year2, data.agency.year3, data.agency.year4)
         
         } 
         else{
@@ -403,6 +413,8 @@ bar_primeob_by_agency_choosing <- function(company_name,
                                  top = textGrob(paste(company_name, "Contract Obligations by Agency ", FY_range, sep = ""),
                                                 gp = gpar(fontsize = 24)), bottom = "Fiscal Year")
           
+          data.agency.year.all <- rbind(data.agency.year1, data.agency.year2, data.agency.year3, 
+                                        data.agency.year4, data.agency.year5)
           
       }
         
@@ -416,6 +428,7 @@ bar_primeob_by_agency_choosing <- function(company_name,
   ggsave(paste(company_name, " Contract Obligations by Agency.jpg", sep = ""), plot.all, 
          width = w, height = h, units = "in")
   plot.all
+  data.agency.year.all
   
 }
 

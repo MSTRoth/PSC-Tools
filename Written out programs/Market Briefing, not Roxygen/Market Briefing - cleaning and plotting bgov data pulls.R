@@ -69,11 +69,11 @@ ggsave("Contract Obligation by Agency top 6.jpg", plot,
 
 
 ####By Agency, Year, and services Portfolio group Category####
-
+data <- 
 PSC_portfolio <- read_csv("C:/Users/Roth/Documents/Reference Tables/Acquisition_services_taxonomy.csv")
 
 data.agency.year.pf <- data %>% 
-  left_join(PSC_portfolio, 
+ left_join(PSC_portfolio, 
             by = c("Product Service Code (PSC) / Federal Supply Code (FSC)" = "PSC")) %>% 
   select("Fiscal Year", "Funding Agency", "Transaction Value", "Portfolio Group") %>% 
   dplyr::rename(fiscal_year = "Fiscal Year", 

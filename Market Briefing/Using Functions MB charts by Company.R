@@ -7,27 +7,33 @@ library(tidyverse)
 library(svglite)
 options(scipen = 999)
 
+
+
+
+
+
 setwd("C:/Users/Roth/Documents/Market Briefings/Data/Contract Obligations by Agency Charts")
-bar_primeob_by_agency(company_name = "AINS - USAID, DOS data",
+setwd("C:/Users/Roth/Documents/Market Briefings/Data/Contract Obligations by Agency Charts")
+bar_primeob_by_agency(company_name = "HII",
                       FY = 2018, 
-                      n_agencies = 5,
+                      n_agencies = 4,
                       scale = 1000000, 
                       scale_text = "Millions",
                       FY_range = "FY14-FY17",
-                      h = 7,
+                      h = 6,
                       w = 13)
 
 ###if some charts are too small
 
-bar_primeob_by_agency_scaling(company_name = "Leidos", 
+bar_primeob_by_agency_scaling(company_name = "HII", 
                                           FY = 2018,
-                                          n_agencies = 2,
+                                          n_agencies = 4,
                                           scale = 1000000,
                                           scale_text = "Millions",
                                           FY_range = "FY14-FY17",
-                                          top_range = c(1:2,4),
-                                          bottom_range = c(3,5),
-                                          grid_division = c(3,2),
+                                          top_range = c(1),
+                                          bottom_range = c(2:4),
+                                          grid_division = c(1,3),
                                           num_size = 3,
                                           h = 6,
                                           w = 11)
@@ -44,6 +50,22 @@ bar_primeob_by_agency_choosing(company_name = "AINS - USAID, DOS data",
                                            num_size = 3,
                                            h = 6,
                                            w = 11)
+
+
+
+bar_primeob_by_agency_scaling("HII", 
+                                          FY = 2018,
+                                          n_agencies = 4,
+                                          scale = 1000000,
+                                          scale_text = "Millions",
+                                          FY_range = "FY14-FY17",
+                                          top_range = c(1),
+                                          bottom_range = c(3,4),
+                                          optional_third_range = c(2),
+                                          grid_division = c(1,1,2),
+                                          num_size = 3,
+                                          h = 6,
+                                          w = 13)
 
 ##several different specific agencies
 
@@ -172,7 +194,7 @@ bar_primeob_by_agency_scaling <- function(company_name,
 
 -------------------------
   
-bar_funding_agency_services_by_category(funding_agency_name = "AINS - USAID, DOS data Company Profile",
+bar_funding_agency_services_by_category(funding_agency_name = "DOE",
                                         "Funding Agency",
                                         FY = 2018,
                                         scale = 1000000,
@@ -228,10 +250,10 @@ bar_funding_agency_services_by_category_scaling(funding_agency_name = "HHS_CMS",
                                                             h = 10,
                                                             w = 20)
 
-data <- read_csv(paste("C:/Users/Roth/Documents/Market Briefings/Data/Funding Agencies and Subsets for DPAP/", "DHS_CBP",
+data <- read_csv(paste("C:/Users/Roth/Documents/Market Briefings/Data/Funding Agencies and Subsets for DPAP/", "DOE",
                        ".csv", sep = ""))
-PSC_portfolio <- read_csv("C:/Users/Roth/Documents/Reference Tables/Acquisition_services_taxonomy.csv") 
-
+#PSC_portfolio <- read_csv("C:/Users/Roth/Documents/Reference Tables/DPAP Crosswalk.csv") 
+PSC_portfolio <- read_csv("C:/Users/Roth/Documents/Reference Tables/Acquisition_services_taxonomy.csv")
 data.agency <- data %>% 
   left_join(PSC_portfolio, 
             by = c("Product Service Code (PSC) / Federal Supply Code (FSC)" = "PSC")) %>% 
