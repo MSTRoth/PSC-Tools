@@ -34,12 +34,18 @@ data.civdef <- data %>%
   mutate(label_y = cumsum(total_obligations),
          prop = 100*total_obligations/sum(total_obligations)) %>% 
   filter(Year == 2016 | Year == 2017 | Year == 2018) 
+
+
+
+geom_text(aes(class, total + 20, label = total, fill = NULL), data = totals)
     
     
 ggplot(data.civdef, aes(x = civ_def, y = total_obligations, fill = factor(Quarter, levels = c("Q4","Q3", "Q2","Q1")))) +
   geom_bar(stat = "identity") +
   geom_text(aes(label = round(total_obligations, digits = 1), y = label_y), size = 3, vjust = 1.5)+
   geom_text(data = subset(data.civdef, Year != 2018), aes(label = sprintf('%.0f%%', prop), y = label_y), size = 3, vjust = 3)+
+  stat_summary(fun.y = sum, aes(label = ..y.., group = Year), 
+               geom = "text", vjust = -1, size = 4, fontface = "bold")+   ####Adds total to top
   scale_fill_manual(name = NULL, values = c("Q4" = "rosybrown3", "Q3" = "burlywood1", "Q2" = "skyblue3", "Q1" = "turquoise4")) +
   facet_grid(~Year, labeller = label_wrap_gen(20))+
   labs(x="Fiscal Year", y = "Contract Obligations (in) Billions") + #, 
@@ -72,22 +78,34 @@ data_GW$`DPAP Category` <- factor(data_GW$`DPAP Category`,
 DPAP_GW <- data_GW %>% 
   group_by(`Fiscal Year`) %>% 
   arrange(desc(`DPAP Category`)) %>% 
-  mutate(label_y = cumsum(`$ billions`))
+  #mutate(label_y = cumsum(`$ billions`))
+  mutate(pors = ifelse(`DPAP Category`=="Products","Product","Service")) %>% 
+  group_by(`Fiscal Year`, pors) %>% 
+  mutate(`pors$` = sum(`$ billions`))
+
+
+label_height <- DPAP_GW %>% 
+  group_by(`Fiscal Year`, pors) %>% 
+  summarize(`pors$` = sum(`$ billions`)) %>% 
+  group_by(`Fiscal Year`) %>% 
+  arrange(desc(`pors`)) %>% 
+  mutate(label_y2 = cumsum(`pors$`)) %>% 
+  left_join(DPAP_GW, by = c("Fiscal Year", "pors", "pors$") )
 
 
 
-
-ggplot(DPAP_GW, aes(x = `Fiscal Year`, y = `$ billions`, 
-                     fill = `DPAP Category`)) +
+ggplot(label_height, aes(x = `Fiscal Year`, y = `$ billions`, 
+                         fill = `DPAP Category`)) +
   geom_bar(stat = "identity") +
-  #geom_text(aes(label = round(`$ billions`, digits = 1), y = label_y), size = 3, vjust = 1.5)+
+  # stat_summary(aes(x = `Fiscal Year`, y = `$ billions`),
+  #            fill = pors,
+  #              colour = "black")+
+  # scale_color_manual(values = c("black", "black"))+
+  geom_text(aes(x = `Fiscal Year`, label = round(`pors$`, digits = 2), y = label_y2), size = 4, vjust = 1.5, check_overlap = TRUE)+
   scale_fill_brewer(name = "Services/Products Contract Category", palette = "Set3") +
   labs(x="Fiscal Year", y = "Contract Obligations (in) Billions", 
        title = "Government Wide Total Contract Spending")+
-  ylim(0, 600)+
   theme(plot.title = element_text(hjust = 0.5, size = 24, face = "bold"), axis.ticks.x = element_blank())
-
-
 
 
   
@@ -110,15 +128,32 @@ data_DoD$`DPAP Category` <- factor(data_DoD$`DPAP Category`,
 DPAP_DoD <- data_DoD %>% 
   group_by(`Fiscal Year`) %>% 
   arrange(desc(`DPAP Category`)) %>% 
-  mutate(label_y = cumsum(`$ billions`))
+ # mutate(label_y = cumsum(`$ billions`)) %>% 
+  mutate(pors = ifelse(`DPAP Category`=="Products","Product","Service")) %>% 
+    group_by(`Fiscal Year`, pors) %>% 
+  mutate(`pors$` = sum(`$ billions`))
+  
+  
+label_height <- DPAP_DoD %>% 
+  group_by(`Fiscal Year`, pors) %>% 
+  summarize(`pors$` = sum(`$ billions`)) %>% 
+  group_by(`Fiscal Year`) %>% 
+  arrange(desc(`pors`)) %>% 
+  mutate(label_y2 = cumsum(`pors$`)) %>% 
+  left_join(DPAP_DoD, by = c("Fiscal Year", "pors", "pors$") )
 
 
 
 
-ggplot(DPAP_DoD, aes(x = `Fiscal Year`, y = `$ billions`, 
+
+ggplot(label_height, aes(x = `Fiscal Year`, y = `$ billions`, 
                  fill = `DPAP Category`)) +
   geom_bar(stat = "identity") +
-  #geom_text(aes(label = round(`$ billions`, digits = 1), y = label_y), size = 3, vjust = 1.5)+
+ # stat_summary(aes(x = `Fiscal Year`, y = `$ billions`),
+ #            fill = pors,
+ #              colour = "black")+
+ # scale_color_manual(values = c("black", "black"))+
+  geom_text(aes(x = `Fiscal Year`, label = round(`pors$`, digits = 2), y = label_y2), size = 4, vjust = 1.5, check_overlap = TRUE)+
   scale_fill_brewer(name = "Services/Products Contract Category", palette = "Set3") +
   labs(x="Fiscal Year", y = "Contract Obligations (in) Billions", 
       title = "DoD Total Contract Spending")+
@@ -147,15 +182,25 @@ data_civ$`DPAP Category` <- factor(data_civ$`DPAP Category`,
 DPAP_civ <- data_civ %>% 
   group_by(`Fiscal Year`) %>% 
   arrange(desc(`DPAP Category`)) %>% 
-  mutate(label_y = cumsum(`$ billions`))
+ # mutate(label_y = cumsum(`$ billions`)) %>% 
+  mutate(pors = ifelse(`DPAP Category`=="Products","Product","Service")) %>% 
+  group_by(`Fiscal Year`, pors) %>% 
+  mutate(`pors$` = sum(`$ billions`))
 
 
+label_height <- DPAP_civ %>% 
+  group_by(`Fiscal Year`, pors) %>% 
+  summarize(`pors$` = sum(`$ billions`)) %>% 
+  group_by(`Fiscal Year`) %>% 
+  arrange(desc(`pors`)) %>% 
+ mutate(label_y2 = cumsum(`pors$`)) %>% 
+  left_join(DPAP_civ, by = c("Fiscal Year", "pors", "pors$") )
 
 
-ggplot(DPAP_civ, aes(x = `Fiscal Year`, y = `$ billions`, 
+ggplot(label_height, aes(x = `Fiscal Year`, y = `$ billions`, 
                     fill = `DPAP Category`)) +
   geom_bar(stat = "identity") +
-  #geom_text(aes(label = round(`$ billions`, digits = 1), y = label_y), size = 3, vjust = 1.5)+
+  geom_text(aes(x = `Fiscal Year`, label = round(`pors$`, digits = 2), y = label_y2), size = 4, vjust = 1.5, check_overlap = TRUE)+
   scale_fill_brewer(name = "Services/Products Contract Category", palette = "Set3") +
   labs(x="Fiscal Year", y = "Contract Obligations (in) Billions", 
        title = "Civilian Total Contract Spending")+
