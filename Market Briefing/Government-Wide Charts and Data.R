@@ -1,5 +1,5 @@
 ### Quarter comparisons for Contract Obligations - Civilian/Defense Breakout####
-
+library(colorspace)
 library(readr)
 data <- read_csv("~/Market Briefings/Data/Government-Wide data/Civilian and Defense Data by quarter.csv")
 
@@ -42,14 +42,20 @@ geom_text(aes(class, total + 20, label = total, fill = NULL), data = totals)
     
 ggplot(data.civdef, aes(x = civ_def, y = total_obligations, fill = factor(Quarter, levels = c("Q4","Q3", "Q2","Q1")))) +
   geom_bar(stat = "identity") +
-  geom_text(aes(label = round(total_obligations, digits = 1), y = label_y), size = 3, vjust = 1.5)+
-  geom_text(data = subset(data.civdef, Year != 2018), aes(label = sprintf('%.0f%%', prop), y = label_y), size = 3, vjust = 3)+
-  stat_summary(fun.y = sum, aes(label = ..y.., group = Year), 
-               geom = "text", vjust = -1, size = 4, fontface = "bold")+   ####Adds total to top
-  scale_fill_manual(name = NULL, values = c("Q4" = "rosybrown3", "Q3" = "burlywood1", "Q2" = "skyblue3", "Q1" = "turquoise4")) +
-  facet_grid(~Year, labeller = label_wrap_gen(20))+
-  labs(x="Fiscal Year", y = "Contract Obligations (in) Billions") + #, 
-  #      title = paste(company_name, " Contract Obligations by Agency ", FY_range, sep = ""))+
+ geom_text(aes(label = round(total_obligations, digits = 1), y = label_y), size = 3, vjust = 1.5)+
+ geom_text(data = subset(data.civdef, Year != 2018), aes(label = sprintf('%.0f%%', prop), y = label_y), size = 3, vjust = 3)+
+  stat_summary(fun.y = sum, aes(label = ..y.., group = Year),
+               geom = "text", vjust = -.5, size = 4, fontface = "bold")+   ####Adds total to top
+ #geom_text(aes(color = Quarter == "Q1", label = round(total_obligations, digits = 1), y = label_y), size = 3, vjust = 1.5) +## white on dark
+# geom_text(data = subset(data.civdef, Year != 2018), aes(color = Quarter == "Q1",
+                         #                   label = sprintf('%.0f%%', prop), y = label_y), size = 3, vjust = 3)+ ## white on dark
+ #scale_color_manual(guide = FALSE, values = c("black", "white")) +   ## White on dark
+ # scale_fill_manual(name = NULL, values = c("Q4" = "lightcyan", "Q3" = "lightblue2",
+                                      #     "Q2" = "skyblue3", "Q1" = "skyblue4")) +
+  scale_fill_brewer(name = "Quarter", palette = "Spectral")+
+ facet_grid(~Year, labeller = label_wrap_gen(20))+
+  labs(x="Fiscal Year", y = "Contract Obligations (in) Billions", 
+        title = "Contract Obligations by Quarter: FY16-FY18") +
   theme(plot.title = element_text(hjust = 0.5, size = 24, face = "bold"), axis.ticks.x = element_blank(),
         strip.text = element_text(face = "bold"))
 

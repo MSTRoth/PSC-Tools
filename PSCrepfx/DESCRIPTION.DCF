@@ -1,0 +1,17 @@
+dePackage: PSCrepfx
+Type: Package
+Title: Repeated Functions for PSC Visualizations
+Authors@R: person("Marielle","Roth",
+                  role = c("aut", "cre"))
+Description: Tools for supporting PSC Market Briefings
+Imports: tidyr
+Imports: ggplot2
+Imports: grid
+Imports: gridextra
+Imports: svglite
+Imports: ggrepel
+Imports: readr
+Imports: options(scipen = 999)
+Imports: dplyr
+Encoding: UTF-8
+LazyData: true

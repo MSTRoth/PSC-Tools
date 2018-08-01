@@ -24,7 +24,7 @@
 #' @examples bar_primeob_by_agency(company_name = "Leidos", FY = 2018, n_agencies = 5, 
 #'                                 scale = 1000000000, scale_text = "Billions", FY_range = "FY14-FY17", 
 #'                                 num_size = 3, h = 7, w = 13)
-#' @export
+
 bar_primeob_by_agency <- function(company_name,
                                   FY = 1,
                                   n_agencies = 6,
@@ -112,7 +112,7 @@ bar_primeob_by_agency <- function(company_name,
 #'                                          grid_division = c(3,2), num_size = 3,
 #'                                          h = 7, w = 13)
 #'
-#' @export                                                                                    
+#'                                                                                     
 bar_primeob_by_agency_scaling <- function(company_name, 
                                           FY = 1,
                                           n_agencies = 6,
@@ -309,7 +309,7 @@ data.agency.year.all
 #'                                          scale_text = "Millions", FY_range = "FY14-FY17",
 #'                                          num_size = 3, h = 6, w = 11)
 #'
-#'@export
+#'
 bar_primeob_by_agency_choosing <- function(company_name, 
                                            funding_agency_type1,
                                            funding_agency_name1,

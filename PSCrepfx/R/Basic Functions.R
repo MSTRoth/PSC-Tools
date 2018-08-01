@@ -12,8 +12,10 @@
 #'
 #'@return data frame with the total transaction value (contract obligations) per fiscal year per funding agency or subfield (all at the same level)
 #'
+#'@example
 #'
-#'@export
+#'
+#'
 process.data.get.sum <- function(data.frame, funding_agency_name, funding_agency_type, FY = 1, scale = 1000000){
   data.agency.year <- data.frame %>% 
     select("Fiscal Year", funding_agency_type, "Transaction Value") %>% 
@@ -45,7 +47,8 @@ process.data.get.sum <- function(data.frame, funding_agency_name, funding_agency
 #'@example plot.one(data, facet_var = "funding_agency", 3, scale_text = "Millions", "Leidos", "FY14-FY17")
 #'
 #'
-#'@export
+#'
+
 plot.one <- function (data.frame, facet_var, num_size, scale_text = "Millions", company_name, FY_range){
   plot <- ggplot(data.frame, aes(x = fiscal_year, y = total_transaction_value, fill = fiscal_year)) +
     geom_bar(stat = "identity") +
@@ -73,8 +76,11 @@ plot.one <- function (data.frame, facet_var, num_size, scale_text = "Millions", 
 #'
 #'@details This is the first plot in a series of plots (at least two), meant to be used with grid.arrange with other plots
 #'
+#'@example
 #'
-#'@export
+#'
+#'
+
 plot.first <- function (data.frame, facet_var, num_size, scale_text){
   plot <- ggplot(data.frame, aes(x = fiscal_year, y = total_transaction_value, fill = fiscal_year)) +
     geom_bar(stat = "identity") +
@@ -99,8 +105,11 @@ plot.first <- function (data.frame, facet_var, num_size, scale_text){
 #'
 #'@details This is the last plot in a series of plots (at least two), meant to be used with grid.arrange
 #'
+#'@example
 #'
-#'@export
+#'
+#'
+
 plot.last <- function (data.frame, facet_var, num_size){
   plot <- ggplot(data.frame, aes(x = fiscal_year, y = total_transaction_value, fill = fiscal_year)) +
     geom_bar(stat = "identity") +
@@ -124,10 +133,11 @@ plot.last <- function (data.frame, facet_var, num_size){
 #'
 #'@details This is for any middle plot in a series of plots (at least three), meant to be used with grid.arrange
 #'
-#'@examples
+#'@example
 #'
 #'
-#'@export
+#'
+
 plot.middle <- function (data.frame, facet_var, num_size){  
   plot <- ggplot(data.frame, aes(x = fiscal_year, y = total_transaction_value, fill = fiscal_year)) +
     geom_bar(stat = "identity") +
