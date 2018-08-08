@@ -56,7 +56,7 @@ plotyr <- ggplot(data.civdef, aes(x = civ_def, y = total_obligations, fill = fac
 scale_fill_manual(name = "Quarter", values = brewer.pal(9, "YlOrRd")[c(1,3,5,7)])+
  facet_grid(~FYYear, labeller = label_wrap_gen(20))+
   labs(x="Fiscal Year", y = "Contract Obligations (in) Billions", title = "PSC Analysis Shows Civilian Agency Contract Obligations \n Underruns Available Funding",
-        subtitle = "Contract Obligations by Quarter: FY16-FY18") +
+        subtitle = NULL) +
   theme(plot.title = element_text(hjust = 0.5, vjust = 3, size = 24, face = "bold"), plot.subtitle = element_text(hjust = 0.5, size = 18, face = "bold"),
         axis.ticks.x = element_blank(),
         strip.text = element_text(face = "bold"), axis.title.x = element_blank())
@@ -142,7 +142,7 @@ ggplot(label_height, aes(x = `Fiscal Year`, y = `$ billions`,
   #              colour = "black")+
   # scale_color_manual(values = c("black", "black"))+
   geom_text(aes(x = `Fiscal Year`, label = round(`pors$`, digits = 2), y = label_y2), size = 4, vjust = 1.5, check_overlap = TRUE)+
-  scale_fill_brewer(name = "Services/Products Contract Category", palette = "Set3") +
+  scale_fill_brewer(name = "Services/Products Contract Category", palette = "Spectral") +
   labs(x="Fiscal Year", y = "Contract Obligations (in) Billions",
        title = "Government Wide Total Contract Spending")+
   theme(plot.title = element_text(hjust = 0.5, size = 24, face = "bold"), axis.ticks.x = element_blank())
