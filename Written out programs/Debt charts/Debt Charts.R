@@ -328,6 +328,58 @@ ggplot(top_5, aes(x=year, y = sum, color = Country, group = Country))+
 
 
 
+
+
+
+
+
+
+
+treasuries <- read_csv("Treasuries 2017-2018 monthly Foreign.csv")
+
+data <- treasuries %>% 
+  gather("month", "debt", 2:14) %>% 
+  filter(Country != "Grand Total") %>% 
+  filter(Country %in% c("China","Japan","Ireland","Brazil","United Kingdom"
+                        ,"Switzerland","Luxembourg","Hong Kong","Cayman Islands")) #%>% 
+# separate("month/day/year", c("month","year")
+
+data$Country = factor(data$Country, levels =  c("China","Japan","Ireland","Brazil","United Kingdom"
+                                                ,"Switzerland","Luxembourg","Hong Kong","Cayman Islands"))
+#levels(data$Country) = c("China","Japan","Ireland","Brazil","United Kingdom")
+# ,
+#                          "Switzerland","Luxembourg","Hong Kong","Cayman Islands",
+#                          "Taiwan")
+
+
+# data$year = paste("20", data$year, sep="")
+#data$month = paste("20", data$year, sep="")
+data$month = as.Date(data$month)
+
+ggplot(data, aes(x=month, y = debt, fill = Country)) +
+  geom_area(stat = "identity", position = "stack")+
+  scale_x_date(date_labels="%b\n%Y",date_breaks  ="1 month")+
+  scale_color_manual(primary.colors())
+
+ggplot(data, aes(x=month, y = debt, color = Country))+
+  geom_line(size = 1) +
+  scale_x_date(date_labels="%b\n%Y",date_breaks  ="1 month")+
+  scale_color_manual(name = "Country", values = brewer.pal(9, "Set1")[c(1, 2, 6, 7, 4, 8, 5, 9, 3)])
+
+library(RColorBrewer)
+coul = brewer.pal(4, "BuPu") 
+
+# I can add more tones to this palette :
+coul = colorRampPalette(coul)(25)
+
+library(colorRamps)
+install.packages("colorRamps")
+
+
+
+
+
+
   # scale_colour_manual(values=c("grey", "blue", "green","purple","red"))
 # countries.all.years.sum <- data_long %>%
 #   select(Country, year, securities_in_mil) %>%
