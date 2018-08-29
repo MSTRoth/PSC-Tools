@@ -28,7 +28,7 @@ installed.packages()
 
 install.packages("rtools")
 
-setwd("C:/Users/Roth/Documents/PSCrepfx")
+setwd("C:/Users/Roth/Documents/PSC-MB")
 ?create_description
 
 devtools::install_version("roxygen2", version = "6.0.1")

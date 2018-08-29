@@ -4,12 +4,13 @@
 library(tidyverse)
 
 
-data <- read_csv("X:/1 Marielle's Folder/Data For R/Government-Wide and DPAP Visualizations/Funding Agencies and Subsets/DoD services, by DPAP.csv")
+data <- read_delim("X:/1 Marielle Folder/Data For R/Government-Wide and DPAP Visualizations/Funding Agencies and Subsets/DoD services, by DPAP.csv"
+                 , delim = "\t")
 
 data_edit <- data %>%
   rename(amount = `Total (in millions)`) %>% 
   filter(Type != "Products") %>% 
-  filter(Year == "FY17") %>% 
+  filter(Year == "FY18") %>% 
   mutate(amountB = amount/1000) %>% 
   group_by(Service) %>% 
   mutate(prop = 100*amountB/sum(amountB))
@@ -69,10 +70,10 @@ ggplot(data_edit, aes(x = Type , y = amountB, fill = Type)) +
         axis.text.x = element_blank(), axis.ticks.x = element_blank())
 
 
-ggplot(data_edit, aes(x = Type , y = amountB, fill = Type)) +
+plot<-ggplot(data_edit, aes(x = Type , y = amountB, fill = Type)) +
   geom_bar(stat = "identity") +
   geom_text(aes(label = sprintf('%0.1f', round(amountB, digit = 1))), vjust = -.5, size = 3.5, fontface = "bold")+
-  geom_text(aes(label = sprintf('%0.1f%%', prop), y = .25), size = 3, fontface = "bold") +
+  geom_text(aes(label = sprintf('%0.1f%%', prop), y = .15), size = 3, fontface = "bold") +
   scale_fill_manual(name = "Services Taxonomy", data_edit$Type, values = c("Knowledge Based Services" = "mediumorchid3", "Research and Development" = "mediumseagreen",
                                                                            "Equipment Related Services" = "firebrick1","Facility Related Services" = "goldenrod2",
                                                                            "Electronic & Communication Services" = "steelblue3", "Transportation Services" = "palevioletred1",
@@ -81,9 +82,16 @@ ggplot(data_edit, aes(x = Type , y = amountB, fill = Type)) +
   #scale_fill_manual(Type, palette = "Dark1") +
   facet_grid(~Service, scales = "free_x", drop = TRUE) +   #labeller = label_wrap_gen(20)) +
   #scale_x_discrete(labels = molten[, setNames(as.character(id), ord)])+
-  labs(y="Amount (in Billions)", title = "DoD Services Taxonomy by Branch")+
+  labs(y="Amount (in Billions)", title = "DoD Services Taxonomy by Branch FY18 (as of August 27)")+
   theme(plot.title = element_text(hjust = 0.5, size = 24, face = "bold"), axis.title.x = element_blank(),
         axis.text.x = element_blank(), axis.ticks.x = element_blank())
+
+setwd("~/Analyzed Datasets/Outside Requests/Vision/2018/Defense")
+
+ggsave("DPAP DOD by service FY18 (as of 8-27).jpg", plot,
+       width = 15, height = 8, units = "in") 
+
+
 
 unique(data_edit$Type)
 

@@ -1,18 +1,25 @@
 # install.packages("ggrepel")
 #install.packages("gridExtra")
+install.packages("cowplot")
+install.packages("ggpubr")
+install.packages("lemon")
+library(lemon)
+library(ggpubr)
+library(cowplot)
 library(gridExtra)
 library(grid)
 library(ggrepel)
 library(tidyverse)
 library(svglite)
+library(PSCmb)
 options(scipen = 999)
 
-bar_primeob_by_agency("Netapp",
+bar_primeob_by_agency("Halfaker and Associates",
                                   FY = 2018,
                                   n_agencies = 6,
-                                  scale = 1000,
-                                  scale_text = "Thousands",
-                                  "FY2014 - FY2017",
+                                  scale = 1000000,
+                                  scale_text = "Millions",
+                                  FY_range = "FY2014 - FY2017",
                                   num_size = 3,
                                   h = 6,
                                   w = 11)
@@ -32,63 +39,6 @@ bar_primeob_by_agency(company_name = "HII",
                       w = 13)
 
 
-
-bar_primeob_by_agency <- function(company_name,
-                                  FY = 1,
-                                  n_agencies = 6,
-                                  scale = 1000000,
-                                  scale_text = "Millions",
-                                  FY_range,
-                                  num_size = 3,
-                                  h = 6,
-                                  w = 11){
-
-  #Location for saving charts
-  setwd("C:/Users/Roth/Documents/Market Briefings/Data/Contract Obligations by Agency Charts")
-
-  data <- read_csv(paste("C:/Users/Roth/Documents/Market Briefings/Data/Company Profiles/", "HII",
-                         " Company Profile.csv", sep = ""))
-  ###Get top n agencyies by obligation
-  top_n_agencies <- data %>%
-    filter(`Performing Vendor`== "Camber Corp") %>%
-    select("Fiscal Year", "Funding Agency", "Transaction Value") %>%
-    dplyr::rename(fiscal_year = "Fiscal Year",
-                  funding_agency = "Funding Agency",
-                  transaction_value = "Transaction Value") %>%
-    filter(fiscal_year != 2018) %>%
-    group_by(funding_agency) %>%
-    dplyr::summarize(grand_total_transaction_value = sum(transaction_value)) %>%
-    arrange(desc(grand_total_transaction_value)) %>%
-    top_n(6) %>%
-    filter(funding_agency != "Department of State (DOS)")
-
-  top_n_agencies <- top_n_agencies$funding_agency
-
-  ###Process Data to get total transaction value by year
-
-  data.agency.year <- data %>%
-    filter(`Performing Vendor`== "Camber Corp") %>%
-    select("Fiscal Year", "Funding Agency", "Transaction Value") %>%
-    dplyr::rename(fiscal_year = "Fiscal Year",
-                  funding_agency = "Funding Agency",
-                  transaction_value = "Transaction Value") %>%
-    filter(fiscal_year != 2018) %>%
-    filter(funding_agency %in% top_n_agencies) %>%
-    dplyr::group_by(funding_agency, fiscal_year) %>%
-    dplyr::summarize(total_transaction_value = (sum(transaction_value)/1000000))
-
-  data.agency.year$fiscal_year = as.character(data.agency.year$fiscal_year)
-  data.agency.year$facet = factor(data.agency.year$funding_agency, levels = c(top_n_agencies))
-
-  ###Create Barplot and Save as JPG
-  plot <- plot.one(data.agency.year, "funding_agency", 3, "Millions", "Camber Corp", "FY14-FY17")
-
-  plot
-  data.agency.year
-
-  ggsave(paste(company_name, " Contract Obligations by Agency.jpg", sep = ""), plot,
-         width = w, height = h, units = "in")
-}
 
 
 
@@ -110,7 +60,7 @@ bar_primeob_by_agency_scaling(company_name = "HII",
 
 ###choosing specific agencies or subsets
 
-bar_primeob_by_agency_choosing(company_name = "AINS - USAID, DOS data",
+bar_primeob_by_agency_choosing(company_name = "Halfaker and Associates",
                                            funding_agency_type = "Funding Agency",
                                            funding_agency_name = "Agency for International Development (USAID)",
                                            FY = 2018,
@@ -122,7 +72,27 @@ bar_primeob_by_agency_choosing(company_name = "AINS - USAID, DOS data",
                                            w = 11)
 
 
-
+bar_primeob_by_agency_choosing(company_name = "Halfaker and Associates",
+                                           funding_agency_type1 = "Funding Agency",
+                                           funding_agency_name1 = "Department of Defense (DOD)",
+                                           funding_agency_type2 = "Funding Agency",
+                                           funding_agency_name2 = "Department of Veterans Affairs (VA)",
+                                           funding_agency_type3 = "Funding Bureau",
+                                           funding_agency_name3 = "Centers for Medicare and Medicaid Services (CMS)",
+                                           funding_agency_type4 = "Funding Office Level 3",
+                                           funding_agency_name4 = "Defense Health Agency (DHA)",
+                                           funding_agency_type5 = NULL,
+                                           funding_agency_name5 = NULL,
+                                           FY = 2018,
+                                           scale = 1000000,
+                                           scale_text = "Millions",
+                                           grid_division = NULL,
+                                           FY_range = "FY14-FY17",
+                                           num_size = 3,
+                                           h = 6,
+                                           w = 11)
+plot.all
+leg <- get_legend(plot)
 bar_primeob_by_agency_scaling("HII",
                                           FY = 2018,
                                           n_agencies = 4,
