@@ -1,6 +1,7 @@
 ### Quarter comparisons for Contract Obligations - Civilian/Defense Breakout####
 library(colorspace)
 library(readr)
+library(RColorBrewer)
 data <- read_csv("~/Market Briefings/Data/Government-Wide data/Civilian and Defense Data by quarter.csv")
 
 #data<-rename(data, civ_def = "Civ/Def", total_obligations = "Contract Obligations (in Billions)")
@@ -40,7 +41,7 @@ display.brewer.all()
 
 
 
-plotyr <- ggplot(data.civdef, aes(x = civ_def, y = total_obligations, fill = factor(Quarter, levels = c("Q4","Q3", "Q2","Q1")))) +
+plotyr <- ggplot(data.civdef, aes(x = FYYear, y = total_obligations, fill = factor(Quarter, levels = c("Q4","Q3", "Q2","Q1")))) +
   geom_bar(stat = "identity") +
  geom_text(aes(label = round(total_obligations, digits = 1), y = label_y), size = 3, vjust = 1.5, fontface = "bold")+
  geom_text(data = subset(data.civdef, Year != 2018), aes(label = sprintf('%.0f%%', prop), y = label_y), size = 3, vjust = 3, fontface = "bold")+
@@ -54,17 +55,19 @@ plotyr <- ggplot(data.civdef, aes(x = civ_def, y = total_obligations, fill = fac
                                       #     "Q2" = "skyblue3", "Q1" = "skyblue4")) +
   #scale_fill_brewer(name = "Quarter", palette = "YlOrRd")+
 scale_fill_manual(name = "Quarter", values = brewer.pal(9, "YlOrRd")[c(1,3,5,7)])+
- facet_grid(~FYYear, labeller = label_wrap_gen(20))+
-  labs(x="Fiscal Year", y = "Contract Obligations (in) Billions", title = "PSC Analysis Shows Civilian Agency Contract Obligations \n Underruns Available Funding",
+ facet_grid(~civ_def, labeller = label_wrap_gen(20))+
+  labs(x="Fiscal Year", y = "Contract Obligations (in) Billions", title = "Contract Obligations Comparison FY16-FY18",
         subtitle = NULL) +
   theme(plot.title = element_text(hjust = 0.5, vjust = 3, size = 24, face = "bold"), plot.subtitle = element_text(hjust = 0.5, size = 18, face = "bold"),
         axis.ticks.x = element_blank(),
-        strip.text = element_text(face = "bold"), axis.title.x = element_blank())
-
-install.packages("png")
-library(png)
-
-img <- readPNG("C:/Users/Roth/Desktop/logo.png")
+        strip.text = element_text(face = "bold", size = 20), 
+        axis.title.x = element_blank(),
+        panel.spacing = unit(4, "lines"))
+# 
+# install.packages("png")
+# library(png)
+# 
+# img <- readPNG("C:/Users/Roth/Desktop/logo.png")
 
 
 ggsave("Contract Obligations by Quarter- FY16-FY18.jpg", plotyr,

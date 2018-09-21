@@ -14,7 +14,9 @@ library(svglite)
 library(PSCmb)
 options(scipen = 999)
 
-bar_primeob_by_agency("Halfaker and Associates",
+setwd("X:/1 Marielle Folder/Data For R/Contract Obligation by Agency/Company Profiles")
+
+bar_primeob_by_agency("Prospecta",
                                   FY = 2018,
                                   n_agencies = 6,
                                   scale = 1000000,
@@ -29,9 +31,9 @@ bar_primeob_by_agency("Halfaker and Associates",
 
 setwd("C:/Users/Roth/Documents/Market Briefings/Data/Contract Obligations by Agency Charts")
 setwd("C:/Users/Roth/Documents/Market Briefings/Data/Contract Obligations by Agency Charts")
-bar_primeob_by_agency(company_name = "HII",
+bar_primeob_by_agency(company_name = "Prospecta",
                       FY = 2018,
-                      n_agencies = 4,
+                      n_agencies = 6,
                       scale = 1000000,
                       scale_text = "Millions",
                       FY_range = "FY14-FY17",

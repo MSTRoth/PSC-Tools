@@ -40,6 +40,8 @@ devtools::load_all()
 devtools::document()
 ?file
 
+setwd("~/PSC-MB")
+
 devtools::load_all()
 roxygen2::roxygenise()
 roxygenise(clean=TRUE)
