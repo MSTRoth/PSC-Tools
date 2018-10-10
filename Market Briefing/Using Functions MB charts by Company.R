@@ -14,6 +14,9 @@ library(svglite)
 library(PSCmb)
 options(scipen = 999)
 
+
+plot.one(data.agency.year, "facet", 4, scale_text = "Millions", "KBRwyle", "Millions)")
+
 setwd("X:/1 Marielle Folder/Data For R/Contract Obligation by Agency/Company Profiles")
 
 bar_primeob_by_agency("Prospecta",
@@ -123,22 +126,28 @@ bar_primeob_by_agency_scaling <- function(company_name,
                                           num_size = 4,
                                           h = 6,
                                           w = 11){
-
-  data <- read_csv(paste("C:/Users/Roth/Documents/Market Briefings/Data/", company_name,
+  Desktop
+  data <- read_csv(paste("C:/Users/Roth/Documents/Market Briefings/Data/", "KBR",
                          " Company Profile.csv", sep = ""))
+  
+  data <- read_csv(paste("C:/Users/Roth/Desktop/", "KBR",
+                         " Company Profile.csv", sep = ""))
+  
   ###Get top n agencyies by obligation
   top_n_agencies <- data %>%
     select("Fiscal Year", "Funding Agency", "Transaction Value") %>%
     dplyr::rename(fiscal_year = "Fiscal Year",
                   funding_agency = "Funding Agency",
                   transaction_value = "Transaction Value") %>%
-    filter(fiscal_year != FY) %>%
+    filter(fiscal_year != 2018) %>%
     group_by(funding_agency) %>%
     dplyr::summarize(grand_total_transaction_value = sum(transaction_value)) %>%
     arrange(desc(grand_total_transaction_value)) %>%
-    top_n(n_agencies)
-
-  top_n_agencies <- top_n_agencies$funding_agency
+    top_n(2)
+  
+top_n_agencies <- top_n_agencies$funding_agency
+  
+ 
   top_agencies <- top_n_agencies[top_range]
   bottom_agencies <- top_n_agencies[bottom_range]
 
@@ -149,14 +158,44 @@ bar_primeob_by_agency_scaling <- function(company_name,
     dplyr::rename(fiscal_year = "Fiscal Year",
                   funding_agency = "Funding Agency",
                   transaction_value = "Transaction Value") %>%
-    filter(fiscal_year != FY) %>%
+    filter(fiscal_year != 2018) %>%
     filter(funding_agency %in% top_n_agencies) %>%
     dplyr::group_by(funding_agency, fiscal_year) %>%
-    dplyr::summarize(total_transaction_value = (sum(transaction_value)/scale))
+    dplyr::summarize(total_transaction_value = (sum(transaction_value)/1000000))
+  
+  
+  all_else <- data %>% 
+    select("Fiscal Year", "Funding Agency", "Transaction Value") %>%
+    dplyr::rename(fiscal_year = "Fiscal Year",
+                  funding_agency = "Funding Agency",
+                  transaction_value = "Transaction Value") %>%
+    filter(fiscal_year != 2018) %>%
+    filter(!funding_agency %in% top_n_agencies) %>%
+    dplyr::group_by(fiscal_year) %>%
+    dplyr::summarize(total_transaction_value = (sum(transaction_value)/1000000))
+  
+  all_else$funding_agency <- "Other"
+  
+  all_else <- all_else[,c(3,1,2)]
+  
 
-  data.agency.year$fiscal_year = as.character(data.agency.year$fiscal_year)
-  data.agency.year$facet = factor(data.agency.year$funding_agency, levels = c(top_n_agencies))
+  
+data.agency.year.wo <- bind_rows(data.agency.year, all_else)
 
+  data.agency.year.wo$fiscal_year = as.character(data.agency.year.wo$fiscal_year)
+  data.agency.year.wo$facet = factor(data.agency.year.wo$funding_agency, levels = c(top_n_agencies, "Other"))
+
+  
+  
+  plot.one(data.agency.year.wo, "facet", 4, scale_text = "Millions", "KBRwyle", "(FY14 - FY17)")
+  
+  
+  
+  
+  
+  
+  
+  
   ###Get top n agencyies by obligation
   top_n_agencies <- data %>%
     select("Fiscal Year", "Funding Agency", "Transaction Value") %>%
@@ -181,10 +220,10 @@ bar_primeob_by_agency_scaling <- function(company_name,
     dplyr::rename(fiscal_year = "Fiscal Year",
                   funding_agency = "Funding Agency",
                   transaction_value = "Transaction Value") %>%
-    filter(fiscal_year != FY) %>%
+    filter(fiscal_year != 2018) %>%
     filter(funding_agency %in% top_agencies) %>%
     dplyr::group_by(funding_agency, fiscal_year) %>%
-    dplyr::summarize(total_transaction_value = (sum(transaction_value)/scale))
+    dplyr::summarize(total_transaction_value = (sum(transaction_value)/1000000))
 
   data.agency.year.top$fiscal_year = as.character(data.agency.year.top$fiscal_year)
   data.agency.year.top$facet = factor(data.agency.year.top$funding_agency, levels = c(top_agencies))
@@ -205,10 +244,10 @@ bar_primeob_by_agency_scaling <- function(company_name,
   ###Create Barplot and Save as JPG
   plot1 <- ggplot(data.agency.year.top, aes(x = fiscal_year, y = total_transaction_value, fill = fiscal_year)) +
     geom_bar(stat = "identity") +
-    geom_text_repel(aes(label = round(total_transaction_value, digits = 1), vjust = 1.5), size = num_size)+
+    geom_text_repel(aes(label = round(total_transaction_value, digits = 1), vjust = 1.5), size = 4)+
     scale_fill_manual("Fiscal Year", values = c("2014" = "steelblue1", "2015" = "orangered", "2016" = "grey70", "2017" = "orange")) +
     facet_grid(~facet, labeller = label_wrap_gen(20))+
-    labs(y = paste("Contract Obligations (in) ", scale_text, sep = "")) +
+    labs(y = paste("Contract Obligations (in ", "millions)", sep = "")) +
     theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(), axis.title.x=element_blank())+ guides(fill="none")
 
 
