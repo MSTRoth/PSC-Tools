@@ -12,6 +12,7 @@ library(ggrepel)
 library(tidyverse)
 library(svglite)
 library(PSCmb)
+library(RColorBrewer)
 options(scipen = 999)
 
 
@@ -48,7 +49,7 @@ bar_primeob_by_agency(company_name = "Prospecta",
 
 
 
-###if some charts are too small
+###if some charts are too small####
 
 bar_primeob_by_agency_scaling(company_name = "HII",
                                           FY = 2018,
@@ -63,7 +64,7 @@ bar_primeob_by_agency_scaling(company_name = "HII",
                                           h = 6,
                                           w = 11)
 
-###choosing specific agencies or subsets
+###choosing specific agencies or subsets####
 
 bar_primeob_by_agency_choosing(company_name = "Halfaker and Associates",
                                            funding_agency_type = "Funding Agency",
@@ -112,7 +113,7 @@ bar_primeob_by_agency_scaling("HII",
                                           h = 6,
                                           w = 13)
 
-##several different specific agencies
+##several different specific agencies####
 
 bar_primeob_by_agency_scaling <- function(company_name,
                                           FY = 1,
@@ -443,3 +444,16 @@ ggsave(paste(funding_agency_name, " Services Contracts by Category FY14-FY17-sca
 
 
 plot3
+
+########################################################################
+
+##Contracts by services/products####
+
+total_contract_spending("Civilian",
+                                    num_size = 4,
+                                    FY_range = "2009-2018",
+                                    h = 6,
+                                    w = 11,
+                                    file_ext = ".jpg")
+
+plot

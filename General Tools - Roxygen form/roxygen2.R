@@ -31,6 +31,13 @@ install.packages("rtools")
 setwd("C:/Users/Roth/Documents/PSC-MB")
 ?create_description
 
+
+
+setwd("C:/Users/Roth/Documents/PSC-MB")
+devtools::load_all()
+devtools::document()
+
+
 devtools::install_version("roxygen2", version = "6.0.1")
 
 create("C:/Users/Roth/Documents/PSCrepfx", description = getOption("devtools.desc"), check = FALSE,
