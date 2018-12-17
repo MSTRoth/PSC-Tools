@@ -42,7 +42,7 @@ display.brewer.all()
 
 
 plotyr <- ggplot(data.civdef, aes(x = FYYear, y = total_obligations, fill = factor(Quarter, levels = c("Q4","Q3", "Q2","Q1")))) +
-  geom_bar(stat = "identity") +
+  geom_bar(stat = "identity", color = "black") +
  geom_text(aes(label = round(total_obligations, digits = 1), y = label_y), size = 3, vjust = 1.5, fontface = "bold")+
  geom_text(data = subset(data.civdef, Year != 2018), aes(label = sprintf('%.0f%%', prop), y = label_y), size = 3, vjust = 3, fontface = "bold")+
   stat_summary(fun.y = sum, aes(label = ..y.., group = Year),
