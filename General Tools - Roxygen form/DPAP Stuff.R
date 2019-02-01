@@ -4,13 +4,12 @@
 library(tidyverse)
 
 
-data <- read_delim("X:/1 Marielle Folder/Data For R/Government-Wide and DPAP Visualizations/Funding Agencies and Subsets/DoD services, by DPAP.csv"
-                 , delim = "\t")
+data <- read_csv("S:/1 Marielle Folder/Data Sets/By Agency/DOD/DoD services, by DPAP.csv")
 
 data_edit <- data %>%
   rename(amount = `Total (in millions)`) %>% 
   filter(Type != "Products") %>% 
-  filter(Year == "FY18") %>% 
+  filter(Year != "FY18") %>% 
   mutate(amountB = amount/1000) %>% 
   group_by(Service) %>% 
   mutate(prop = 100*amountB/sum(amountB))
@@ -33,8 +32,8 @@ navy <- data_edit %>%
 air_force <- data_edit %>%
   filter(Service == "Air Force")
 
-defense_wide <- data_edit %>%
-  filter(Service == "Defense-wide")
+defense_other <- data_edit %>%
+  filter(Service == "DoD, Other")
 
 # ggplot(data_edit, aes(x = factor(-amountB) , y = amountB, fill = Type)) +
 #   geom_bar(stat = "identity") +
@@ -53,7 +52,7 @@ defense_wide <- data_edit %>%
 #         axis.text.x = element_blank(), axis.ticks.x = element_blank())
 
 
-ggplot(data_edit, aes(x = Type , y = amountB, fill = Type)) +
+ggplot(data_edit, aes(x = year , y = amountB, fill = Type)) +
   geom_bar(stat = "identity") +
   geom_text(aes(label = sprintf('%0.1f', round(amountB, digit = 1))), vjust = -.5, size = 3.5, fontface = "bold")+
   geom_text(aes(label = sprintf('%0.1f%%', prop)), vjust = 1.25, size = 3, fontface = "bold") +
@@ -70,21 +69,7 @@ ggplot(data_edit, aes(x = Type , y = amountB, fill = Type)) +
         axis.text.x = element_blank(), axis.ticks.x = element_blank())
 
 
-plot<-ggplot(data_edit, aes(x = Type , y = amountB, fill = Type)) +
-  geom_bar(stat = "identity") +
-  geom_text(aes(label = sprintf('%0.1f', round(amountB, digit = 1))), vjust = -.5, size = 3.5, fontface = "bold")+
-  geom_text(aes(label = sprintf('%0.1f%%', prop), y = .15), size = 3, fontface = "bold") +
-  scale_fill_manual(name = "Services Taxonomy", data_edit$Type, values = c("Knowledge Based Services" = "mediumorchid3", "Research and Development" = "mediumseagreen",
-                                                                           "Equipment Related Services" = "firebrick1","Facility Related Services" = "goldenrod2",
-                                                                           "Electronic & Communication Services" = "steelblue3", "Transportation Services" = "palevioletred1",
-                                                                           "Logistics Management Services" = "lightseagreen", "Construction Services" = "olivedrab2",
-                                                                           "Medical Services" = "orangered1")) +
-  #scale_fill_manual(Type, palette = "Dark1") +
-  facet_grid(~Service, scales = "free_x", drop = TRUE) +   #labeller = label_wrap_gen(20)) +
-  #scale_x_discrete(labels = molten[, setNames(as.character(id), ord)])+
-  labs(y="Amount (in Billions)", title = "DoD Services Taxonomy by Branch FY18 (as of August 27)")+
-  theme(plot.title = element_text(hjust = 0.5, size = 24, face = "bold"), axis.title.x = element_blank(),
-        axis.text.x = element_blank(), axis.ticks.x = element_blank())
+
 
 setwd("~/Analyzed Datasets/Outside Requests/Vision/2018/Defense")
 

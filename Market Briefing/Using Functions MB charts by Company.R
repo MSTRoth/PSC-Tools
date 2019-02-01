@@ -18,7 +18,7 @@ options(scipen = 999)
 
 plot.one(data.agency.year, "facet", 4, scale_text = "Millions", "KBRwyle", "Millions)")
 
-setwd("X:/1 Marielle Folder/Data For R/Contract Obligation by Agency/Company Profiles")
+setwd("X:/1 Marielle Folder/Data Sets/By Agency")
 
 bar_primeob_by_agency("Prospecta",
                                   FY = 2018,
@@ -448,12 +448,199 @@ plot3
 ########################################################################
 
 ##Contracts by services/products####
-
-total_contract_spending("Civilian",
+install.packages(PSCmb)
+library(PSCmb)
+PSCmb::total_contract_spending("Civilian",
                                     num_size = 4,
                                     FY_range = "2009-2018",
                                     h = 6,
                                     w = 11,
                                     file_ext = ".jpg")
 
-plot
+
+
+contract_obs_by_quarter <- function(year, num_size = 3, notyear_prop,
+                                    FY_range, title = paste("Contract Obligations by Quarter: ", FY_range, sep = ""),
+                                    subtitle = NULL, h = 6, w = 11, file_ext = ".jpg")
+  
+  #Location for saving charts
+  setwd("S:/1 Marielle Folder/Visualizations/Government-Wide") #location charts are saved
+
+  data <- read_csv("S:/1 Marielle Folder/Data Sets/Government-Wide Data/csv/To Build/Civilian and Defense Data by quarter.csv")
+  
+  data$Year = as.character(data$Year)
+  
+  data.civdef_total <- data %>%
+    rename(civ_def = "Civ/Def",
+           total_obligations = "Contract Obligations (in Billions)") %>%
+    group_by(Year, civ_def) %>%
+    mutate(label_y = cumsum(total_obligations))
+  
+  data.civdef_total$Year = as.character(data.civdef_total$Year)
+  
+  data.civdef <- data %>%
+    rename(civ_def = "Civ/Def",
+           total_obligations = "Contract Obligations (in Billions)") %>%
+    group_by(Year, civ_def) %>%
+    mutate(label_y = cumsum(total_obligations),
+           prop = 100*total_obligations/sum(total_obligations)) %>%
+    filter(Year %in% c(2016, 2017, 2018)) %>% 
+    mutate(FYYear = paste("FY", Year, sep = ""))
+  
+  
+  plot <- ggplot(data.civdef, aes(x = FYYear, y = total_obligations, fill = factor(Quarter, levels = c("Q4","Q3", "Q2","Q1")))) +
+    geom_bar(stat = "identity", color = "Black") +
+    geom_text(aes(label = round(total_obligations, digits = 1), y = label_y), size = 4, vjust = 1.5, fontface = "bold")+
+    geom_text(data = subset(data.civdef, Year != 0), aes(label = sprintf('%.0f%%', prop), y = label_y), size = 4, vjust = 3, fontface = "bold")+
+    stat_summary(fun.y = sum, aes(label = ..y.., group = Year),
+                 geom = "text", vjust = -.5, size = sum(4,1), fontface = "bold")+   ####Adds total to top
+    scale_fill_manual(name = "Quarter", values = brewer.pal(9, "YlOrRd")[c(1,3,5,7)])+
+    facet_grid(~civ_def, labeller = label_wrap_gen(20))+
+    labs(y = "Contract Obligations (in) Billions",
+         title = "Contract Obligations Comparison") +
+    # theme(plot.title = element_text(hjust = 0.5, vjust = 3, size = 24, face = "bold"),
+    #       plot.subtitle = element_text(hjust = 0.5, size = 18, face = "bold"), axis.ticks.x = element_blank(),
+    #       strip.text = element_text(face = "bold"), axis.title.x = element_blank())
+    theme(plot.title = element_text(hjust = 0.5, vjust = 3, size = 24, face = "bold"), plot.subtitle = element_text(hjust = 0.5, size = 18, face = "bold"),
+          axis.ticks.x = element_blank(),
+          strip.text = element_text(face = "bold", size = 20), 
+          axis.title.x = element_blank(),
+          panel.spacing = unit(4, "lines"))
+  
+  
+  ggsave("All Contract Obligations Civ-Def FY16-FY18 by quarter.jpg", plot,
+         width = 13, height = 6.5, units = "in")
+  
+  
+###readable chart
+chart <- data %>% 
+  spread('Civ/Def', `Contract Obligations (in Billions)`)
+
+write.csv(chart, "C:/Users/Roth/Documents/Other Requests (Co-workers)/David/readable civ-def quarterly chart (as of 1-17-19).csv")
+  
+#--------------------------------------
+
+  total_contract_spending <- function(type,
+                                      num_size = 4,
+                                      FY_range,
+                                      h = 6,
+                                      w = 11,
+                                      file_ext = ".jpg")
+    
+    data <- read_csv("S:/1 Marielle Folder/Data Sets/Government-Wide Data/csv/To Build/DPAP (services and total) Data - Government Wide.csv")
+    
+    
+  setwd("S:/1 Marielle Folder/Visualizations/Government-Wide")
+    
+    data$`DPAP Category` <- factor(data$`DPAP Category`,
+                                   levels = c("Products", "Construction Services",
+                                              "Electronic & Communication Services",
+                                              "Equipment Related Services",
+                                              "Facility Related Services",
+                                              "Knowledge Based Services",
+                                              "Logistics Management Services",
+                                              "Medical Services",
+                                              "Research and Development",
+                                              "Transportation Services"),
+                                   ordered = is.ordered(data$`DPAP Category`))
+    
+    DPAP_all <- data %>%
+      filter(`DPAP Category` != "Total") %>% 
+      group_by(`Fiscal Year`) %>%
+      arrange(desc(`DPAP Category`)) %>%
+      #mutate(label_y = cumsum(`$ billions`))
+      mutate(pors = ifelse(`DPAP Category`=="Products","Product","Service")) %>%
+      group_by(`Fiscal Year`, pors) %>%
+      mutate(`pors$` = sum(`$_billions_all`))
+    
+    
+    label_height_all <- DPAP_all %>%
+      group_by(`Fiscal Year`, pors) %>%
+      summarize(`pors$` = sum(`$_billions_all`)) %>%
+      group_by(`Fiscal Year`) %>%
+      arrange(desc(`pors`)) %>%
+      mutate(label_y2 = cumsum(`pors$`)) %>%
+      left_join(DPAP_all, by = c("Fiscal Year", "pors", "pors$") )
+    
+    DPAP_dod <- data %>%
+      filter(`DPAP Category` != "Total") %>% 
+      group_by(`Fiscal Year`) %>%
+      arrange(desc(`DPAP Category`)) %>%
+      #mutate(label_y = cumsum(`$ billions`))
+      mutate(pors = ifelse(`DPAP Category`=="Products","Product","Service")) %>%
+      group_by(`Fiscal Year`, pors) %>%
+      mutate(`pors$` = sum(`$_billions_DoD`))
+    
+    
+    label_height_dod <- DPAP_dod %>%
+      group_by(`Fiscal Year`, pors) %>%
+      summarize(`pors$` = sum(`$_billions_DoD`)) %>%
+      group_by(`Fiscal Year`) %>%
+      arrange(desc(`pors`)) %>%
+      mutate(label_y2 = cumsum(`pors$`)) %>%
+      left_join(DPAP_dod, by = c("Fiscal Year", "pors", "pors$") )
+    
+    DPAP_civ <- data %>%
+      filter(`DPAP Category` != "Total") %>% 
+      group_by(`Fiscal Year`) %>%
+      arrange(desc(`DPAP Category`)) %>%
+      #mutate(label_y = cumsum(`$ billions`))
+      mutate(pors = ifelse(`DPAP Category`=="Products","Product","Service")) %>%
+      group_by(`Fiscal Year`, pors) %>%
+      mutate(`pors$` = sum(`$_billions_Civilian`))
+    
+    
+    label_height_civ <- DPAP_civ %>%
+      group_by(`Fiscal Year`, pors) %>%
+      summarize(`pors$` = sum(`$_billions_Civilian`)) %>%
+      group_by(`Fiscal Year`) %>%
+      arrange(desc(`pors`)) %>%
+      mutate(label_y2 = cumsum(`pors$`)) %>%
+      left_join(DPAP_civ, by = c("Fiscal Year", "pors", "pors$") )
+    
+    
+    
+    plot_all <- ggplot(label_height_all, aes(x = `Fiscal Year`, y = `$_billions_all`,
+                                     fill = `DPAP Category`)) +
+      geom_bar(stat = "identity") +
+      geom_text(aes(x = `Fiscal Year`, label = round(`pors$`, digits = 2), y = label_y2), size = 4, vjust = 1.5, check_overlap = TRUE)+
+      scale_fill_brewer(name = "Services/Products Contract Category", palette = "Set3") +
+      labs(x="Fiscal Year", y = "Contract Obligations (in) Billions",
+           title = paste("Government-Wide", " Total Contract Spending", sep = ""))+
+      theme(plot.title = element_text(hjust = 0.5, size = 24, face = "bold"), axis.ticks.x = element_blank()) 
+    
+    plot_dod <- ggplot(label_height_dod, aes(x = `Fiscal Year`, y = `$_billions_DoD`,
+                                         fill = `DPAP Category`)) +
+      geom_bar(stat = "identity") +
+      geom_text(aes(x = `Fiscal Year`, label = round(`pors$`, digits = 2), y = label_y2), size = 4, vjust = 1.5, check_overlap = TRUE)+
+      scale_fill_brewer(name = "Services/Products Contract Category", palette = "Set3") +
+      labs(x="Fiscal Year", y = "Contract Obligations (in) Billions",
+           title = paste("DoD", " Total Contract Spending", sep = ""))+
+      theme(plot.title = element_text(hjust = 0.5, size = 24, face = "bold"), axis.ticks.x = element_blank())   
+    
+    plot_civ <- ggplot(label_height_civ, aes(x = `Fiscal Year`, y = `$_billions_Civilian`,
+                                         fill = `DPAP Category`)) +
+      geom_bar(stat = "identity") +
+      geom_text(aes(x = `Fiscal Year`, label = round(`pors$`, digits = 2), y = label_y2), size = 4, vjust = 1.5, check_overlap = TRUE)+
+      scale_fill_brewer(name = "Services/Products Contract Category", palette = "Set3") +
+      labs(x="Fiscal Year", y = "Contract Obligations (in) Billions",
+           title = paste("Civilian", " Total Contract Spending", sep = ""))+
+      theme(plot.title = element_text(hjust = 0.5, size = 24, face = "bold"), axis.ticks.x = element_blank()) 
+    
+    
+    ggsave(paste("Civilian", " Total Contract Spending Service Product ", "FY16-FY18.jpg", sep = ""), plot_civ,
+           width = 13, height = 6.5, units = "in")
+    
+    ggsave(paste("Defense", " Total Contract Spending Service Product ", "FY16-FY18.jpg", sep = ""), plot_dod,
+           width = 13, height = 6.5, units = "in")
+    
+    ggsave(paste("Government-Wide", " Total Contract Spending Service Product ", "FY16-FY18.jpg", sep = ""), plot_all,
+           width = 13, height = 6.5, units = "in")
+    
+
+  
+  
+  
+  
+  
+  

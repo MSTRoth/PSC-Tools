@@ -14,7 +14,7 @@
 #'
 #'
 #'@export
-process.data.get.sum <- function(data.frame, funding_agency_name, funding_agency_type, FY = 1, scale = 1000000){
+process.data.get.sum <- function(data.frame, funding_agency_name, funding_agency_type, FY = 1, scale_text = "Millions", scale = 1000000){
   data.agency.year <- data.frame %>% 
     select("Fiscal Year", funding_agency_type, "Transaction Value") %>% 
     dplyr::rename(fiscal_year = "Fiscal Year", 
@@ -27,7 +27,7 @@ process.data.get.sum <- function(data.frame, funding_agency_name, funding_agency
   
   data.agency.year$fiscal_year = as.character(data.agency.year$fiscal_year)
   
-  data.agency.year
+  assign(x = "data.agency.year", value = data.agency.year, envir=.GlobalEnv)
 }
 
 
@@ -50,7 +50,8 @@ plot.one <- function (data.frame, facet_var, num_size, scale_text = "Millions", 
   plot <- ggplot(data.frame, aes(x = fiscal_year, y = total_transaction_value, fill = fiscal_year)) +
     geom_bar(stat = "identity") +
     geom_text(aes(label = round(total_transaction_value, digits = 1), vjust = 1.5), size = num_size)+
-    scale_fill_manual("Fiscal Year", values = c("2014" = "steelblue1", "2015" = "orangered", "2016" = "grey70", "2017" = "orange", "2018" = "olivedrab3")) +
+    scale_fill_manual("Fiscal Year", values = c("2014" = "steelblue1", "2015" = "orangered", 
+                                                "2016" = "grey70", "2017" = "orange", "2018" = "olivedrab3")) +
     facet_grid(noquote(paste("~",facet_var, sep = "")), labeller = label_wrap_gen(20))+
     labs(x="Fiscal Year", y = paste("Contract Obligations (in) ", scale_text, sep = ""), 
          title = paste(company_name, " Contract Obligations by Agency ", FY_range, sep = ""))+
