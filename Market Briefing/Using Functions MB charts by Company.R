@@ -609,7 +609,7 @@ write.csv(chart, "C:/Users/Roth/Documents/Other Requests (Co-workers)/David/read
            title = paste("Government-Wide", " Total Contract Spending", sep = ""))+
       theme(plot.title = element_text(hjust = 0.5, size = 24, face = "bold"), axis.ticks.x = element_blank()) 
     
-    plot_dod <- ggplot(label_height_dod, aes(x = `Fiscal Year`, y = `$_billions_DoD`,
+    plot_plot_dod <- ggplot(label_height_dod, aes(x = `Fiscal Year`, y = `$_billions_DoD`,
                                          fill = `DPAP Category`)) +
       geom_bar(stat = "identity") +
       geom_text(aes(x = `Fiscal Year`, label = round(`pors$`, digits = 2), y = label_y2), size = 4, vjust = 1.5, check_overlap = TRUE)+

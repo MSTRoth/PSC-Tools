@@ -36,9 +36,9 @@ bar_primeob_by_agency <- function(company_name,
                                   w = 11){
 
 #Location for saving charts
-  setwd("C:/Users/Roth/Documents/Market Briefings/Data/Contract Obligations by Agency Charts")
+  setwd("S:/1 Marielle Folder/Visualizations/Agency Charts/Contract Obligations by Agency")
   
-  data <- read_csv(paste("C:/Users/Roth/Documents/Market Briefings/Data/Company Profiles/", company_name,
+  data <- read_csv(paste("S:/1 Marielle Folder/Data Sets/Vendor Specific/", company_name,
                          " Company Profile.csv", sep = ""))
   ###Get top n agencyies by obligation
   top_n_agencies <- data %>% 
@@ -128,10 +128,11 @@ bar_primeob_by_agency_scaling <- function(company_name,
                                           w = 11){
 
 #Location for saving charts
-setwd("C:/Users/Roth/Documents/Market Briefings/Data/Contract Obligations by Agency Charts")
+  setwd("S:/1 Marielle Folder/Visualizations/Agency Charts/Contract Obligations by Agency")
 
-data <- read_csv(paste("C:/Users/Roth/Documents/Market Briefings/Data/Company Profiles/", company_name,
-                       " Company Profile.csv", sep = ""))
+  data <- read_csv(paste("S:/1 Marielle Folder/Data Sets/Vendor Specific/", company_name,
+                         " Company Profile.csv", sep = ""))
+
 ###Get top n agencyies by obligation
 top_n_agencies <- data %>% 
   select("Fiscal Year", "Funding Agency", "Transaction Value") %>% 
@@ -330,10 +331,11 @@ bar_primeob_by_agency_choosing <- function(company_name,
                                            h = 6,
                                            w = 11){
   
-  data <- read_csv(paste("C:/Users/Roth/Documents/Market Briefings/Data/Company Profiles/", company_name,
+
+  data <- read_csv(paste("S:/1 Marielle Folder/Data Sets/Vendor Specific/", company_name,
                          " Company Profile.csv", sep = ""))
   
-  
+  setwd("S:/1 Marielle Folder/Visualizations/Agency Charts/Contract Obligations by Agency")
   
   
   ###Process Data to get total transaction value by year

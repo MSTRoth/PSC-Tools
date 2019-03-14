@@ -51,7 +51,7 @@ print(plot)
 list2env(shutdown_data,envir=.GlobalEnv) 
 
 lapply(names(plot), function(x) {
-ggsave(filename = paste(x," Contract Obligations FY17-18 by quarter.jpg", sep = ""), plot=plot[[x]],
+ggsave(filename = paste(x," Contract Obligations FY17-19Q1 by quarter.jpg", sep = ""), plot=plot[[x]],
        width = 13, height = 6.5, units = "in")
 })
 

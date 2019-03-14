@@ -68,12 +68,6 @@ ggsave(paste("FMP", " Contract Obligations by Agency 15-18.jpg", sep = ""), plot
 
 
 
-
-
-
-
-
-
 ###if two dif
 
 top_n_agencies <- top_6_agencies$funding_agency
